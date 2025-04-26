@@ -56,7 +56,7 @@ async def ai_process_loop(input_queue, output_queue):
                     
                     # Generate the completion
                     stream = await client.chat.completions.create(
-                        model=message.get("model", "gpt-4o-mini"),
+                        model=message.get("model", "gpt-4.1-nano"),
                         messages=[{"role": "user", "content": message["prompt"]}],
                         n=min(message.get("number", 1), 10),
                         stream=True

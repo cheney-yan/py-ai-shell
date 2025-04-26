@@ -56,7 +56,7 @@ def config_set(key_values):
                 endpoint = Prompt.ask("Enter your OpenAI API Endpoint", default="https://api.openai.com/v1")
                 set_configs([("OPENAI_API_ENDPOINT", endpoint)])
             elif choice == "MODEL":
-                model = Prompt.ask("Enter the model to use", default="gpt-4o-mini")
+                model = Prompt.ask("Enter the model to use", default="gpt-4.1-nano")
                 set_configs([("MODEL", model)])
             elif choice == "SILENT_MODE":
                 silent = Confirm.ask("Enable silent mode?")

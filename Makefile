@@ -88,7 +88,14 @@ publish-test: dist
 
 # Add a version target to easily update the version
 version:
-	@echo "Current version: $$(grep -o '__version__ = \"[^\"]*\"' ai_shell/__init__.py | cut -d '\"' -f 2)"
+	@echo "Current version: $$(grep -o '__version__ = \"[^\"]*\"' ai_shell/__init__.py | cut -d '"' -f 2)"
 	@read -p "Enter new version: " new_version; \
 	sed -i '' "s/__version__ = \"[^\"]*\"/__version__ = \"$$new_version\"/" ai_shell/__init__.py
-	@echo "Version updated to: $$(grep -o '__version__ = \"[^\"]*\"' ai_shell/__init__.py | cut -d '\"' -f 2)"
+	@echo "Version updated to: $$(grep -o '__version__ = \"[^\"]*\"' ai_shell/__init__.py | cut -d '\' -f 2)"
+git_tag:
+	# force update remote tag by local version. If remote tag exists, then delete first
+	new_version=$$(grep -o '__version__ = \"[^\"]*\"' ai_shell/__init__.py | cut -d '"' -f 2) && \
+	( git push origin "v$$new_version" --delete || true) && \
+	( git tag -d "v$$new_version" || true) && \
+	git tag -a "v$$new_version" -m "Version $$new_version" && \
+	git push origin "v$$new_version" --force

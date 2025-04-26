@@ -170,7 +170,7 @@ class OpenAIClient:
         )
         self._closed = False
 
-    async def generate_completion(self, prompt: str, model: str = "gpt-4o-mini", number: int = 1) -> AsyncGenerator[str, None]:
+    async def generate_completion(self, prompt: str, model: str = "gpt-4.1-nano", number: int = 1) -> AsyncGenerator[str, None]:
         """Generate a completion from the OpenAI API."""
         if self._closed:
             raise KnownError("Client is closed")

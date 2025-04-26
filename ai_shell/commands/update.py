@@ -1,4 +1,4 @@
-"""Update command for AI Shell."""
+"""Update command for py-ai-shell."""
 
 import subprocess
 import sys
@@ -11,15 +11,15 @@ console = Console()
 
 @click.command(name="update")
 def update_command():
-    """Update AI Shell to the latest version."""
+    """Update py-ai-shell to the latest version."""
     console.print("")
-    command = "pip install --upgrade ai-shell"
+    command = "pip install --upgrade py-ai-shell"
     console.print(f"Running: {command}", style="dim")
     console.print("")
-    
+
     try:
         subprocess.run(command, shell=True, check=True)
-        console.print("\nAI Shell updated successfully!", style="green")
+        console.print("\npy-ai-shell updated successfully!", style="green")
     except subprocess.CalledProcessError:
-        console.print("\nFailed to update AI Shell.", style="red")
+        console.print("\nFailed to update py-ai-shell.", style="red")
         sys.exit(1)
