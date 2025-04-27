@@ -1,4 +1,4 @@
-"""Command-line interface for AI Shell."""
+"""Command-line interface for py-ai-shell."""
 
 import sys
 import signal
@@ -122,20 +122,21 @@ def cli(ctx, prompt: Optional[str] = None, silent: bool = False, args: List[str]
 
                     # If we've had too many consecutive errors, exit to prevent infinite loops
                     if consecutive_errors >= max_consecutive_errors:
-                        console.print("\nToo many consecutive errors. Exiting AI Shell.", style="red")
+                        console.print("\nToo many consecutive errors. Exiting py-ai-shell.", style="red")
                         break
 
                     # Add a small delay before retrying to prevent tight loops
                     import time
                     time.sleep(0.5)
 
-                    # Don't try to handle ExitShellException again
+                    # Handle errors properly
                     try:
                         # Skip error handling for ExitShellException
                         if not isinstance(e, ExitShellException):
+                            # This will exit immediately for KnownError exceptions
                             handle_cli_error(e)
                     except Exception as handle_error:
-                        # If error handling itself fails, just continue
+                        # If error handling itself fails, print the error and continue
                         console.print(f"\nError handling failed: {str(handle_error)}", style="red")
         finally:
             # Clean up any pending tasks

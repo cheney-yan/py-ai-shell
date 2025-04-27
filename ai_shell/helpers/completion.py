@@ -1,12 +1,9 @@
-"""OpenAI API interactions for AI Shell."""
+"""OpenAI API interactions for py-ai-shell."""
 
-import os
 import re
 import platform
-import asyncio
-from typing import Dict, List, Any, Callable, Tuple, Optional, AsyncGenerator
+from typing import Dict, List, Any, Callable, Optional, AsyncGenerator
 
-import openai
 from openai import AsyncOpenAI
 
 from .os_detect import detect_shell
@@ -187,7 +184,42 @@ class OpenAIClient:
                 if chunk.choices and chunk.choices[0].delta.content:
                     yield chunk.choices[0].delta.content
         except Exception as e:
-            raise KnownError(f"OpenAI API request failed: {str(e)}")
+            # Check for specific HTTP status codes
+            error_str = str(e)
+
+            # 401 Unauthorized - Invalid API key
+            if "401" in error_str:
+                raise KnownError(
+                    "OpenAI API authentication failed (401 error). Your API key is invalid. "
+                    f"Please check your API key and try again. Error details: {error_str}"
+                )
+
+            # 403 Forbidden - No permission, revoked key, etc.
+            elif "403" in error_str:
+                raise KnownError(
+                    "OpenAI API access forbidden (403 error). This usually means your API key is valid but has been revoked "
+                    "or doesn't have permission to access the requested resource. "
+                    f"Please check your API key and try again. Error details: {error_str}"
+                )
+
+            # 429 Too Many Requests - Rate limit exceeded
+            elif "429" in error_str:
+                raise KnownError(
+                    "OpenAI API rate limit exceeded (429 error). You've sent too many requests in a short period. "
+                    "Please wait a moment before trying again. "
+                    f"Error details: {error_str}"
+                )
+
+            # 500, 502, 503, 504 - Server errors
+            elif any(code in error_str for code in ["500", "502", "503", "504"]):
+                raise KnownError(
+                    f"OpenAI API server error. The API is currently experiencing issues. "
+                    f"Please try again later. Error details: {error_str}"
+                )
+
+            # Handle other API errors
+            else:
+                raise KnownError(f"OpenAI API request failed: {error_str}")
 
     async def aclose(self) -> None:
         """Close the client and release resources."""

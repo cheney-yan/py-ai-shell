@@ -27,6 +27,7 @@ setup(
             'twine>=4.0.0',
             'wheel>=0.40.0',
             'build>=0.10.0',
+            'watchdog'
         ],
     },
     entry_points={

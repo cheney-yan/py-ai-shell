@@ -1,4 +1,4 @@
-"""Error handling for AI Shell."""
+"""Error handling for py-ai-shell."""
 
 class KnownError(Exception):
     """Known error that should be displayed to the user."""
@@ -10,15 +10,25 @@ class ExitShellException(Exception):
 
 def handle_cli_error(error):
     """Handle CLI errors."""
+    # Import here to avoid circular imports
+    import sys
+    from rich.console import Console
+
+    console = Console()
+
     # Check if this is an exit shell exception
     if isinstance(error, ExitShellException):
         # Exit directly without re-raising to avoid any error messages
-        import sys
         sys.exit(0)
-    # This can be expanded later with more specific error handling
+    # Handle known errors by exiting immediately
     elif isinstance(error, KnownError):
-        # Already formatted for display
-        pass
+        # Print the error message if it hasn't been printed already
+        console.print(f"\n❌ {str(error)}", style="red")
+        # Flush stdout to ensure the message is displayed
+        sys.stdout.flush()
+        # Exit with error code 1
+        sys.exit(1)
     else:
         # Log the error or handle it in some way
-        pass
+        # For now, just print the error and continue
+        console.print(f"\n❌ Unexpected error: {str(error)}", style="red")

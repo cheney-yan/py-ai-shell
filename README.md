@@ -1,38 +1,43 @@
+
 # py-ai-shell
 
 [![Python Package](https://github.com/cheney-yan/py-ai-shell/actions/workflows/python-package.yml/badge.svg)](https://github.com/cheney-yan/py-ai-shell/actions/workflows/python-package.yml)
 [![PyPI version](https://badge.fury.io/py/py-ai-shell.svg)](https://badge.fury.io/py/py-ai-shell)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-AI-powered shell assistant that generates and explains shell commands based on natural language prompts.
+AI-powered shell, helping you create correct command format and explain for all the errors. It's designed for *terminal enthusiasts*!
 
-py-ai-shell transforms your natural language descriptions into shell commands, explains what they do, and helps you fix errors. It's like having a shell expert by your side, making command-line work more accessible and efficient.
+py-ai-shell transforms your natural language descriptions into shell commands, explains what they do, and helps you fix errors. It's like having a shell expert by your side, making command-line work more accessible and efficient, and quickly learn form a master.
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=nvY617ptHIs
+" target="_blank"><img src="./resource/screenshot.png"
+alt="IMAGE ALT TEXT HERE" width="480" height="360" border="10" /></a>
 
 ## Installation
 
 ```bash
 pip install py-ai-shell
+
+# need to set up for the first time. Minimum need to set up OPENAI_KEY
+ai config set OPENAI_KEY=your_api_key
 ```
 
-**Requirements:**
+
+**System Requirements:**
 - Python 3.8 or higher
-- OpenAI API key
+- OpenAI API key (Or any compatible LLM models)
 
 py-ai-shell works on Linux, macOS, and Windows with support for bash, zsh, fish, and PowerShell.
 
-## Quick Start
-
-### Basic Usage
+### Usage
 
 ```bash
 # Start py-ai-shell interactive mode
 ai
 
-# Run with a one-time prompt
+# Run with a initial request
 ai "list all files in the current directory"
 
-# Configure py-ai-shell
-ai config set OPENAI_KEY=your_api_key
 ```
 
 When you run a command, py-ai-shell will:
@@ -46,13 +51,9 @@ When you run a command, py-ai-shell will:
 - **Natural Language Command Generation**: Convert plain English to shell commands
 - **Command Explanations**: Understand what commands do before running them
 - **Error Analysis**: Get explanations and suggestions when commands fail
-- **Command History**: py-ai-shell remembers context from previous commands
-- **Multiple Shell Support**: Works with bash, zsh, fish, and PowerShell
 - **Interactive Mode**: Full interactive shell experience
-- **One-off Mode**: Quick command generation without entering interactive mode
-- **Configurable**: Use different OpenAI models and customize behavior
+- **Configurable**: Use models you specify
 - **Copy to Clipboard**: Easily copy generated commands
-- **Silent Mode**: Less verbose output for experienced users
 
 ## Configuration
 
@@ -65,29 +66,14 @@ ai config set OPENAI_KEY=your_api_key
 # Set the model to use (default: gpt-4.1-nano)
 ai config set MODEL=gpt-4.1-nano
 
-# Enable silent mode (less verbose output)
-ai config set SILENT_MODE=true
-
 # Set API endpoint (useful for proxies or alternative providers)
 ai config set OPENAI_API_ENDPOINT=https://api.openai.com/v1
 
-# Set language (default: en)
-ai config set LANGUAGE=en
 ```
 
 Configuration is stored in `~/.config/py-ai-shell/config.ini` and can be edited directly.
 
 ## Advanced Usage
-
-### Command Options
-
-```bash
-# Run in silent mode (less verbose output)
-ai -s "list files by size"
-
-# Provide a custom prompt
-ai -p "show disk usage"
-```
 
 ### Error Analysis
 
@@ -103,25 +89,28 @@ Enter `?` for a brief explanation, `??` for a standard explanation, or `???` for
 
 ### Command History
 
-py-ai-shell maintains a history of your recent commands and their results, providing context for future commands. This helps the AI understand your environment and previous actions.
+py-ai-shell maintains a history of your recent commands and their results, providing context for future commands. This helps the AI understand your environment and previous actions. You can refer the history using terms like "previous results, previous commands", etc.
 
 ### Interactive Options
 
-After a command is generated, you'll see options:
+After a command is proposed, you have options to:
 - `a/A`: Accept and run the command
 - `e/E`: Edit the command before running
 - `r/R`: Revise (ask AI to generate a new command)
-- `c/C`: Copy the command to clipboard
+- `c/C`: Copy the command to clipboard only
 - `s/S`: Stick to your original command
 - `q/Q`: Quit/cancel
 
-### Using with Different Shells
+## Known Issues
+- It does not work well with interactive terminal applications that require a TTY, such as the vi editor. Screen display could be complicated.
+- Control-C might not be able to terminate existing command execution.
 
-py-ai-shell automatically detects your current shell, but you can generate commands for specific shells by mentioning them in your prompt:
 
-```bash
-ai "list all processes in PowerShell syntax"
-```
+## Future Plans
+ - Support MCP, especially document lookup, internet searching, and file operations
+ - Using agent for more complex tasks, like dangerous command protection, error alerts, etc.
+ - Enhance once-off mode functionality
+
 
 ## Development
 
@@ -133,38 +122,28 @@ ai "list all processes in PowerShell syntax"
    cd py-ai-shell
    ```
 
-2. Install development dependencies:
+1. Install development dependencies:
    ```bash
    make dev
    ```
-
-3. Run tests:
+1. Run locally (with hot loading):
    ```bash
-   make test
+   ./local_run.py
    ```
 
 ### Available Make Commands
 
 - `make help`: Show available commands
 - `make clean`: Remove all build, test, coverage and Python artifacts
-- `make lint`: Check style with flake8
-- `make test`: Run tests
-- `make coverage`: Check code coverage
 - `make dist`: Package for distribution
-- `make install`: Install the package locally
 - `make dev`: Install development dependencies
+- `make version`: Create new package version
+- `make publish`: Publish to PyPI
+- `make git_tag`: Create github tag by package version
 
 ## Contributing
 
-Contributions are welcome! Here's how you can contribute:
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-Please make sure your code passes all tests and linting checks before submitting a pull request.
+Contributions are welcome! 
 
 ## License
 
@@ -172,7 +151,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Credits
 
-- This project is inspired by the [AI Shell project](https://github.com/BuilderIO/ai-shell)
+- This project is inspired by [AI Shell](https://github.com/BuilderIO/ai-shell)
 - Built with [OpenAI API](https://openai.com/api/)
 - Command-line interface powered by [Click](https://click.palletsprojects.com/)
 - Terminal styling with [Rich](https://rich.readthedocs.io/)

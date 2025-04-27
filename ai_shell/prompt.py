@@ -1,4 +1,4 @@
-"""Prompt handling and command execution for AI Shell."""
+"""Prompt handling and command execution for py-ai-shell."""
 
 import sys
 import time
@@ -338,7 +338,7 @@ async def get_prompt(prompt: Optional[str] = None) -> str:
     except (KeyboardInterrupt, EOFError):
         # If user presses Ctrl+D, raise ExitShellException to exit the shell
         from .helpers.error import ExitShellException
-        console.print("\nExiting AI Shell. Goodbye!", style="cyan")
+        console.print("\nExiting py-ai-shell. Goodbye!", style="cyan")
         raise ExitShellException("User requested exit with Ctrl+D")
 
 async def run_or_revise_flow(script: str, key: str, model: str, api_endpoint: str, silent_mode: bool, original_prompt: str) -> None:
@@ -456,7 +456,8 @@ async def prompt(use_prompt: Optional[str] = None, silent_mode: bool = False) ->
     # Import ExitShellException at the top level
     from .helpers.error import ExitShellException
 
-    # Get configuration
+    # Get configuration - this will exit immediately if API key is missing
+    # We don't catch SystemExit here to allow the program to exit
     config = get_config()
     key = config["OPENAI_KEY"]
     api_endpoint = config["OPENAI_API_ENDPOINT"]
@@ -516,7 +517,12 @@ async def prompt(use_prompt: Optional[str] = None, silent_mode: bool = False) ->
         # Let ExitShellException propagate up to the CLI handler
         raise
     except Exception as e:
+        # Print the error message
         print_error(str(e))
+        # Re-raise KnownError exceptions to ensure they're handled properly by the CLI
+        from .helpers.error import KnownError
+        if isinstance(e, KnownError):
+            raise
     finally:
         # Reset the global flag
         in_ai_interaction = False

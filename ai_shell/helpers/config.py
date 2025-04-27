@@ -2,10 +2,8 @@
 
 import os
 import configparser
-from pathlib import Path
 
 from .constants import COMMAND_NAME
-from .error import KnownError
 
 CONFIG_PATH = os.path.join(os.path.expanduser("~"), ".config", "py-ai-shell", "config.ini")
 
@@ -28,9 +26,22 @@ def get_config():
 
     # Validate config
     if not config["DEFAULT"]["OPENAI_KEY"]:
-        raise KnownError(
-            f"Please set your OpenAI API key via `{COMMAND_NAME} config set OPENAI_KEY=<your token>`"
-        )
+        # Import here to avoid circular imports
+        from rich.console import Console
+        import sys
+
+        # Create a new console instance for this error message
+        console = Console()
+
+        # Print the error message
+        error_message = f"❌ Please set your OpenAI API key via `{COMMAND_NAME} config set OPENAI_KEY=<your token>`"
+        console.print(error_message, style="red")
+
+        # Flush stdout to ensure the message is displayed
+        sys.stdout.flush()
+
+        # Exit immediately with error code 1
+        sys.exit(1)
 
     return config["DEFAULT"]
 
@@ -49,7 +60,22 @@ def set_configs(key_values):
     # Update config with new values
     for key, value in key_values:
         if key not in ["OPENAI_KEY", "OPENAI_API_ENDPOINT", "MODEL", "SILENT_MODE", "LANGUAGE"]:
-            raise KnownError(f"Invalid config property: {key}")
+            # Import here to avoid circular imports
+            from rich.console import Console
+            import sys
+
+            # Create a new console instance for this error message
+            console = Console()
+
+            # Print the error message
+            error_message = f"❌ Invalid config property: {key}"
+            console.print(error_message, style="red")
+
+            # Flush stdout to ensure the message is displayed
+            sys.stdout.flush()
+
+            # Exit immediately with error code 1
+            sys.exit(1)
 
         config["DEFAULT"][key] = value
 
